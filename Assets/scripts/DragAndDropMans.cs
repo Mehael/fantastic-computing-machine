@@ -51,16 +51,13 @@ public class DragAndDropMans : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
 	public void OnEndDrag(PointerEventData eventData)
 	{
-		
-		
-
+		cGroup.blocksRaycasts = true;
 		if (work != null)
 		{
 			dragObject.transform.position = work.transform.position;
 		}
 		else {
 			dragObject.transform.position = startPosition;
-			cGroup.blocksRaycasts = true;
 		}
 		dragObject = null;
 	}

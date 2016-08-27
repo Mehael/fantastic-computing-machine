@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Resource{
 	public float value = 0;
-	public float income = 0;
+	public float poplMult = 0;
 	public float multiplicator = 1;
 	public float clickCost = 1;
 
@@ -16,7 +16,7 @@ public class Resource{
 	{
 		label = newlabel;
 		value = startValue;
-		income = startIncome;
+		poplMult = startIncome;
 		labelText = label.GetComponent<Text>();
 		labelText.text = "New: 0";
 	}
@@ -26,6 +26,8 @@ public class ResourcesSystem : MonoBehaviour {
 	public static ResourcesSystem instance;
 	public float GlobalTimer = 1f;
 	public float WorkerTimer = 1f;
+	public bool isInNegativeMode = false;
+
 	public GameObject resourceLabelPrefab;
 	public GameObject stockPanel;
 
@@ -44,6 +46,11 @@ public class ResourcesSystem : MonoBehaviour {
 			coords = spawn.position;
 
 
+		if (newValue < 0)
+		{
+			newValue = 0;
+			isInNegativeMode = true;
+		}
 		var visibleValue = Mathf.FloorToInt(newValue);
 		if (Mathf.FloorToInt(Stock[resName].value) != visibleValue) {
 			var visibleDelta = Mathf.FloorToInt(delta);
@@ -54,12 +61,21 @@ public class ResourcesSystem : MonoBehaviour {
 		}
 
 		Stock[resName].value = newValue;
-		Stock[resName].labelText.text = resName + ":  " + visibleValue;
+		var visibleResName = resName;
+		if (Age.age == "beforeLanguage") {
+			if (resName == "Food") visibleResName = "Omnomnom";
+			if (resName == "Humans") visibleResName = "Chaka";
+			if (resName == "Science") visibleResName = "Mmmmmm";
+
+		}
+		Stock[resName].labelText.text = visibleResName + ":  " + visibleValue;
 		
 	}
 
 	public void AddNewResource(string name, float startIncome = 0, float startValue = 0)
 	{
+		if (Stock.ContainsKey(name)) return;
+
 		var go = Instantiate<GameObject>(resourceLabelPrefab);
 		go.transform.SetParent(stockPanel.transform);
 		Stock.Add(name, new Resource(go, startIncome, startValue));
@@ -68,14 +84,29 @@ public class ResourcesSystem : MonoBehaviour {
 
 	IEnumerator Start()
 	{
-		AddNewResource("Food", -2, 100);
-		AddNewResource("Science", .1f);
+		AddNewResource("Humans", 0, 1);
+		AddNewResource("Science", .1f, 100);
 
 		while (true)
 		{
 			yield return new WaitForSeconds(GlobalTimer);
-			foreach(var res in Stock)
-				ChangeResource(res.Key, Stock[res.Key].income, Stock[res.Key].label.transform);
+			isInNegativeMode = false;
+			foreach (var res in Stock)
+			{
+				if (res.Key != "Science")
+				ChangeResource(res.Key, Stock[res.Key].poplMult * Stock["Humans"].value,
+					Stock[res.Key].label.transform);
+			}
+
+			if (isInNegativeMode)
+			{
+				ChangeResource("Humans", techList.researchedTeches.Count * -10,
+					Stock["Humans"].label.transform);
+				if (Stock["Humans"].value == 0)
+					Age.instance.BadEnd(); 
+			} else
+				ChangeResource("Science", Stock["Science"].poplMult * Stock["Humans"].value,
+					Stock["Science"].label.transform);
 
 		}
 	}
