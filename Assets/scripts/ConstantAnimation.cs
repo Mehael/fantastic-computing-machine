@@ -6,9 +6,9 @@ public class ConstantAnimation : MonoBehaviour {
     public float Torgue;
 
 	// Update is called once per frame
-	void Update () {
+	void LateUpdate () {
         var delta = Time.deltaTime;
-        transform.Translate(moveVector * delta);
-        transform.Rotate(Vector3.forward, Torgue * delta);
+        if (PauseSystem.inPause == false) transform.Translate(moveVector * delta, Space.World);
+        transform.Rotate(Vector3.forward, Torgue * delta, Space.World);
 	}
 }

@@ -6,6 +6,7 @@ using System;
 public class DragAndDropMans : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
 	public Vector3 startPosition;
 	public static DragAndDropMans dragObject;
+	public static bool isDraggable = true;
 	public taskBn work;
 	public Material lineMaterial;
 	public GameObject lineParent;
@@ -28,11 +29,13 @@ public class DragAndDropMans : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
 	public void OnBeginDrag(PointerEventData eventData)
 	{
-		Debug.Log("dragStart");
+		if (isDraggable == false) return;
+		
 		startPosition = transform.position;
 		dragObject = this;
 		cGroup.blocksRaycasts = false;
 		getAnyWork = false;
+		transform.SetParent(BotBrains.instance.popupCanvas);
 	}
 
 	public void SetWork(taskBn newWork)
@@ -46,18 +49,32 @@ public class DragAndDropMans : MonoBehaviour, IBeginDragHandler, IDragHandler, I
 
 	public void OnDrag(PointerEventData eventData)
 	{
+		if (isDraggable == false) return;
 		transform.position = Input.mousePosition;
 	}
 
 	public void OnEndDrag(PointerEventData eventData)
 	{
+		if (dragObject == null) return;
 		cGroup.blocksRaycasts = true;
-		if (work != null)
+
+		if (getAnyWork == false && work != null)
 		{
-			dragObject.transform.position = work.transform.position;
+			work.workers.Remove(gameObject);
+			SlotParent.gameObject.SetActive(true);
+			dragObject.transform.SetParent(SlotParent.transform);
+			dragObject.transform.position = SlotParent.transform.position;
 		}
-		else {
-			dragObject.transform.position = startPosition;
+		else
+		{
+			if (work != null)
+			{
+				dragObject.transform.position = work.transform.position + new Vector3(-50f,-45f);
+			}
+			else
+			{
+				dragObject.transform.position = startPosition;
+			}
 		}
 		dragObject = null;
 	}

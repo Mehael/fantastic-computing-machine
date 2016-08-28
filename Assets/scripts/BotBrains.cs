@@ -10,6 +10,7 @@ public class BotBrains : MonoBehaviour {
 	public GameObject manPrefab;
 	public List<GameObject> mans = new List<GameObject>();
 	public int newManThrethold = 10;
+	public Transform popupCanvas;
 
 	public List<string> beforeWords = new List<string>()
 	{
@@ -31,6 +32,7 @@ public class BotBrains : MonoBehaviour {
 
 		while (true)
 		{
+			if (PauseSystem.inPause) yield return new WaitForEndOfFrame();
 			yield return new WaitForSeconds(Random.Range(3, 12));
 			var message = "";
 
@@ -39,12 +41,6 @@ public class BotBrains : MonoBehaviour {
 					message += beforeWords[Random.Range(0, beforeWords.Count - 1)] + "-";
 			StartCoroutine(
 				TextBubles.instance.Say(mans[Random.Range(0, mans.Count - 1)].transform.position, message));
-
-			if (ResourcesSystem.instance.Stock["Humans"].value >= newManThrethold)
-			{
-				newManThrethold *= 10;
-				SpawnNewMan();
-			}
 		}
 		
 	}

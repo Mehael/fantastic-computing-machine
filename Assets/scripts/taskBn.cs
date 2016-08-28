@@ -11,13 +11,14 @@ public class taskBn : MonoBehaviour, IDropHandler {
 
 	public void Click(string param)
 	{
+		if (PauseSystem.inPause == false)
 		ResourcesSystem.instance.ChangeResource(resName, 
-			ResourcesSystem.instance.Stock[resName].clickCost, transform);
+			ResourcesSystem.instance.Stock[resName].withMultCost*10, transform);
 	}
 
 	public void OnDrop(PointerEventData eventData)
 	{
-		if (workers.Count >= slotAmount) return;
+		if (workers.Count >= slotAmount || DragAndDropMans.dragObject==null) return;
 		if(workers.Contains(DragAndDropMans.dragObject.gameObject)) return;
 
 		workers.Add(DragAndDropMans.dragObject.gameObject);
@@ -28,11 +29,15 @@ public class taskBn : MonoBehaviour, IDropHandler {
 	{
 		while (true)
 		{
+			if (PauseSystem.inPause)
+			{
+				yield return new WaitForEndOfFrame();
+				continue;
+			}
 			yield return new WaitForSeconds(ResourcesSystem.instance.WorkerTimer);
 			foreach (var worker in workers) {
 				ResourcesSystem.instance.ChangeResource(resName, 
-					ResourcesSystem.instance.Stock[resName].clickCost, worker.transform);
-				yield return new WaitForSeconds(.1f);
+					ResourcesSystem.instance.Stock[resName].withMultCost*10f, worker.transform);
 			}
 		}
 	}

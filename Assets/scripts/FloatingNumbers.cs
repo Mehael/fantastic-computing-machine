@@ -24,6 +24,6 @@ public class FloatingNumbers : MonoBehaviour {
 			negativeColor :
 			positiveColor;
 
-		text.text = (value < 0) ? value.ToString() : "+" + value;
+		text.text = (value < 0) ? Age.WrapInt(value) : "+" + Age.WrapInt(value);
 	}
 }
