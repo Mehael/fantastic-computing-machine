@@ -16,12 +16,13 @@ public class techList : MonoBehaviour {
 		 */
 		{ "Language" , new AgeTech("Language", 5, "lang", new List<string>()) },
 		{ "Mathematics" , new AgeTech("Mathematics", 5, "math", new List<string>() {"Language"}) },
+		{ "Reserching", new newTaskTech("Reserching", 1, new List<string>() { "Mathematics" }, "I'm doing science", "Science")},
 
 		{ "Sex",  new SexTech() },
 		{ "Family", new TierUnlock("Family", 10, new List<string>() { "Language" }) },
 
 		{ "Clothing", new WorkerTech("Clothing", 7, new List<string>(), .9f, "Uhhrrr") },
-		{ "Club", new JustTech("Club", 3, new List<string>(), "Cookies", 7, "BamBam") },
+		{ "Club", new JustTech("Club", 3, new List<string>(), "Food", 7, "BamBam") },
 
 		/* Tier 2
 		 * Power = 10
@@ -32,16 +33,15 @@ public class techList : MonoBehaviour {
 		 * worker feature
 		 * 
 		 */
-		{ "Hunting", new newTaskTech("Hunting", 25, new List<string>() { "Club", "Family" }, "Hunting", "Cookies")},
-		{ "Fire", new newTaskTech("Fire", 35, new List<string>() { "Sex", "Family" }, "Search Firewood", "Combustible", 55, -.5f)},
+		{ "Hunting", new newTaskTech("Hunting", 25, new List<string>() { "Club", "Family" }, "Hunting", "Food")},
+		{ "Fire", new newTaskTech("Fire", 35, new List<string>() { "Sex", "Family" }, "Search Firewood", "Combustible", 500, -.5f)},
 
-		{ "Leaders", new TierUnlock("Leaders", 50, new List<string>() { "Family" }) },
-		{ "Tribe", new TierUnlock("Tribe", 100, new List<string>() { "Leaders" }) },
+		{ "Leaders", new TierUnlock("Leaders", 100, new List<string>() { "Family" }) },
 
 		//{ "Professions" , new ProfTech() },
 
 		{ "Houses", new WorkerTech("Houses", 40, new List<string>() {"Family", "Clothing" }, .8f)},
-		{ "Agriculture", new JustTech("Agriculture", 60, new List<string>() {"Club", "Houses" }, "Cookies", 40) },
+		{ "Agriculture", new JustTech("Agriculture", 60, new List<string>() {"Club", "Houses" }, "Food", 40) },
 		{ "Axes", new JustTech("Axes", 10, new List<string>() {"Fire" }, "Combustible", 40) },
 	
 		/* Tier 3
@@ -55,12 +55,12 @@ public class techList : MonoBehaviour {
 		{ "Cats" , new FrendTech() },
 		{ "Domestication", new newTaskTech("Domestication", 777, new List<string>() { "Cats", "Agriculture" }, "Cats Breeding", "Cats", 5000, -.1f)},
 
-		{ "Government", new TierUnlock("Government", 1000, new List<string>() { "Tribe" }) },
+		{ "Government", new TierUnlock("Government", 1000, new List<string>() { "Leaders" }) },
 
 		//FoodUp\2, CombusUp\2, CatsUp\10, WorkerUp
-		{ "Bear mounts", new JustTech("Bear mounts", 500, new List<string>() {"Domestication" }, "Cookies", 400) },
-		{ "Oil", new JustTech("Oil", 500, new List<string>() {"Tribe", "Axes"}, "Combustible", 400) },
-		{ "Cat Farms", new JustTech("Cat Farms", 777, new List<string>() {"Tribe", "Cats"}, "Cats", 100) },
+		{ "Bear mounts", new JustTech("Bear mounts", 500, new List<string>() {"Domestication" }, "Food", 400) },
+		{ "Oil", new JustTech("Oil", 500, new List<string>() { "Leaders", "Axes"}, "Combustible", 400) },
+		{ "Cat Farms", new JustTech("Cat Farms", 777, new List<string>() { "Leaders", "Domestication"}, "Cats", 100) },
 
 		{ "Workmans", new WorkerTech("Workmans", 999, new List<string>() {"Family", "Clothing" }, .7f)},
 
@@ -77,9 +77,11 @@ public class techList : MonoBehaviour {
 		//FoodUp\4, CombusUp\6, CatsUp\20, WorkerUp
 		{ "Medicine", new JustTech("Medicine", 700, new List<string>() {"Government"}, "Humans", 100) },
 
-		{ "Fertilizers", new JustTech("Fertilizers", 7000, new List<string>() { "Government", "Bear mounts"}, "Cookies", 300) },
+		{ "Fertilizers", new JustTech("Fertilizers", 7000, new List<string>() { "Government", "Bear mounts"}, "Food", 300) },
 		{ "Natural gas", new JustTech("Natural gas", 5000, new List<string>() { "Government", "Oil"}, "Combustible", 120) },
 		{ "Cats Video", new JustTech("Cats Video", 3000, new List<string>() { "Government", "Cat Farms"}, "Cats", 40) },
+
+		{ "Books", new JustTech("Books", 1000, new List<string>() { "Government", "Reserching"}, "Science", 520) },
 
 		{ "Guilds", new WorkerTech("Guilds", 9999, new List<string>() {"Workmans", "Government" }, .6f)},
 
@@ -98,11 +100,11 @@ public class techList : MonoBehaviour {
 		{ "Regeneration", new JustTech("Regeneration", 900000, new List<string>() {"Industrialization", "Medicine"}, "Humans", 1000) },
 
 		{ "Greenlight", new JustTech("Greenlight", 123, new List<string>() {"Ludum Dare"}, "Indie", 45000) },
-		{ "Cookie printer", new JustTech("Cookie printer", 700000, new List<string>() { "Government", "Bear mounts"}, "Cookies", 20000) },
+		{ "Cookie printer", new JustTech("Cookie printer", 700000, new List<string>() { "Government", "Bear mounts"}, "Food", 20000) },
 		{ "Nuclear powerplant", new JustTech("Nuclear powerplant", 500000, new List<string>() { "Industrialization" }, "Combustible", 15000)},
 		{ "Internet", new JustTech("Internet", 800000, new List<string>() { "Industrialization", "Electricity", "Guilds" }, "Cats", 5000)},
 
-		{ "Googling", new WorkerTech("Googling", 999999, new List<string>() {"Workmans", "Government" }, .4f)},
+		{ "Googling", new WorkerTech("Googling", 999999, new List<string>() {"Workmans", "Government", "Internet" }, .4f)},
 
 		/* Tier 6
 		 * Power = 100 000 
@@ -112,7 +114,8 @@ public class techList : MonoBehaviour {
 		 * stable waiting endgame
 		 * 
 		 */
-		{ "Androids", new WorkerTech("Androids", 20, new List<string>() { "Union of nations" }, .1f)},
+		{ "Androids", new WorkerTech("Androids", 3000000, new List<string>() { "Union of nations" }, .1f)},
+		{ "Shadow Control", new GlobalTech("Shadow Control", 3000000, new List<string>() { "Union of nations" }, 3f)},
 
 		{ "Terraforming", new TierUnlock("Terraforming", 10000000, new List<string>() { "Union of nations" }) },
 		{ "Haven Project", new HavenTech()},
@@ -206,7 +209,7 @@ public class techList : MonoBehaviour {
 				+ " : " + newTech.scienceCost);
 		}
 
-		var cost = " : " + newTech.scienceCost;
+		var cost = " : " + Age.WrapInt(newTech.scienceCost);
 		if (newTech.scienceCost == 0)
 			cost = " : humans";
 
@@ -289,7 +292,7 @@ public class FrendTech : Tech
 {
 	public FrendTech()
 	{
-		prereqTeches.Add("Language");
+		prereqTeches.Add("Leaders");
 		name = "Cats";
 		scienceCost = 333;
 	}
@@ -358,6 +361,26 @@ public class WorkerTech : Tech
 
 }
 
+public class GlobalTech : Tech
+{
+	float newMult;
+
+	public GlobalTech(string name, int scienceCost, List<string> prereqTeches, float newMult, string maskName = null)
+	{
+		this.prereqTeches = prereqTeches;
+		this.name = name;
+		this.scienceCost = scienceCost;
+		this.maskName = maskName;
+		this.newMult = newMult;
+	}
+
+	public override void Buy()
+	{
+		ResourcesSystem.instance.GlobalMult = newMult;
+	}
+
+}
+
 public class SexTech : Tech
 {
 	public SexTech()
@@ -371,7 +394,9 @@ public class SexTech : Tech
 	public override void Buy()
 	{
 		TaskSystem.instance.AddNewTask("Humans", "Babies Delivery", 0, 0);
-		ResourcesSystem.instance.Stock["Humans"].poplMult = .2f; 
+		ResourcesSystem.instance.Stock["Humans"].poplMult = .2f;
+	
+		
 	}
 }
 

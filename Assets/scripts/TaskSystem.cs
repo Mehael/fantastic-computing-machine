@@ -17,7 +17,7 @@ public class TaskSystem : MonoBehaviour {
 
 	void Start()
 	{
-		AddNewTask("Cookies", "Omnomnom", 100, -1);
+		AddNewTask("Food", "Omnomnom", 100, -1);
 		Age.instance.abrvgl.Add(tasks["Omnomnom"].GetComponentInChildren<Text>(), "Gathering");
 	}
 

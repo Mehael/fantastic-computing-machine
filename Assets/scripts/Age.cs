@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System;
+using UnityEngine.SceneManagement;
 
 public class Age : MonoBehaviour {
 	public static Age instance;
@@ -58,11 +59,13 @@ public class Age : MonoBehaviour {
 
 	public void GoodEnd()
 	{
-		throw new NotImplementedException();
+		SceneManager.LoadScene("goodEnd");
+		SceneManager.UnloadScene("game");
 	}
 
 	public void BadEnd()
 	{
-		throw new NotImplementedException();
+		SceneManager.LoadScene("badEnd");
+		SceneManager.UnloadScene("game");
 	}
 }

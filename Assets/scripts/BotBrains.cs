@@ -22,6 +22,15 @@ public class BotBrains : MonoBehaviour {
 		"Bebe"
 	};
 
+	public List<string> afterWords = new List<string>()
+	{
+		"Drop me on new work",
+		"I'm so tired",
+		"We can to rob,\n not to sow",
+		"Don't forget\n to woork too",
+		"Cats love clicks"
+	};
+
 	void Awake()
 	{
 		instance = this;
@@ -39,6 +48,14 @@ public class BotBrains : MonoBehaviour {
 			if (Age.age == "beforeLanguage")
 				for (int i = 0; i < Random.Range(1, 3); i++)
 					message += beforeWords[Random.Range(0, beforeWords.Count - 1)] + "-";
+			else
+			{
+				if (ResourcesSystem.instance.isInNegativeMode)
+					message = "Kill for the " + ResourcesSystem.instance.deficite + "!";
+				else
+				message = afterWords[Random.Range(0, afterWords.Count - 1)];
+			}
+
 			StartCoroutine(
 				TextBubles.instance.Say(mans[Random.Range(0, mans.Count - 1)].transform.position, message));
 		}

@@ -35,9 +35,13 @@ public class taskBn : MonoBehaviour, IDropHandler {
 				continue;
 			}
 			yield return new WaitForSeconds(ResourcesSystem.instance.WorkerTimer);
+
+			if (resName == "Humans" && ResourcesSystem.instance.isInNegativeMode)
+				continue;
+
 			foreach (var worker in workers) {
 				ResourcesSystem.instance.ChangeResource(resName, 
-					ResourcesSystem.instance.Stock[resName].withMultCost*10f, worker.transform);
+					ResourcesSystem.instance.Stock[resName].withMultCost, worker.transform);
 			}
 		}
 	}

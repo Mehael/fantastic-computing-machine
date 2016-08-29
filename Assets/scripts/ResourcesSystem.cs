@@ -24,7 +24,7 @@ public class Resource{
 	}
 }
 
-public class ResourcesSystem : MonoBehaviour {
+public class ResourcesSystem : AlphaController {
 	public static ResourcesSystem instance;
 	public float GlobalTimer = 1f;
 	public float GlobalMult = 1f;
@@ -33,8 +33,11 @@ public class ResourcesSystem : MonoBehaviour {
 
 	public GameObject resourceLabelPrefab;
 	public GameObject stockPanel;
+	public GameObject BadTimes;
 
 	public Dictionary<string, Resource> Stock = new Dictionary<string, Resource>();
+
+	public string deficite;
 
 	void Awake()
 	{
@@ -53,6 +56,7 @@ public class ResourcesSystem : MonoBehaviour {
 		{
 			newValue = 0;
 			isInNegativeMode = true;
+			deficite = resName;
 		}
 		var visibleValue = Mathf.FloorToInt(newValue);
 		if (Mathf.FloorToInt(Stock[resName].value) != visibleValue) {
@@ -66,7 +70,7 @@ public class ResourcesSystem : MonoBehaviour {
 		Stock[resName].value = newValue;
 		var visibleResName = resName;
 		if (Age.age == "beforeLanguage") {
-			if (resName == "Cookies") visibleResName = "Omnomnom";
+			if (resName == "Food") visibleResName = "Omnomnom";
 			if (resName == "Humans") visibleResName = "Chaka";
 			if (resName == "Science") visibleResName = "Mmmmmm";
 
@@ -88,7 +92,7 @@ public class ResourcesSystem : MonoBehaviour {
 	IEnumerator Start()
 	{
 		AddNewResource("Humans", 0, 1);
-		AddNewResource("Science", .1f, 1000000000);
+		AddNewResource("Science", .1f, 21);
 
 		while (true)
 		{
@@ -112,20 +116,25 @@ public class ResourcesSystem : MonoBehaviour {
 
 			if (isInNegativeMode)
 			{
+				BadTimes.SetActive(true);
+
 				foreach (var e in techList.instance.emmiters)
 					e.Emit(10);
 
 				ChangeResource("Humans", -1 * (techList.researchedTeches.Count + Stock["Humans"].value * .3f),
 					Stock["Humans"].label.transform);
 
+				if (Stock["Humans"].value <= 0)
+					Age.instance.BadEnd();
+
 				if (Stock["Humans"].value < 30)
 					PauseSystem.instance.Pause("Humans");
 
-				if (Stock["Humans"].value == 0)
-					Age.instance.BadEnd();
+
 			}
 			else
 			{
+				BadTimes.SetActive(false);
 				ChangeResource("Science", Stock["Science"].poplMult * Stock["Humans"].value,
 					Stock["Science"].label.transform);
 
