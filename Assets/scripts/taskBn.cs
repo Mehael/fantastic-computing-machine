@@ -14,6 +14,9 @@ public class taskBn : MonoBehaviour, IDropHandler {
 		if (PauseSystem.inPause == false)
 		ResourcesSystem.instance.ChangeResource(resName, 
 			ResourcesSystem.instance.Stock[resName].withMultCost*10, transform);
+
+		transform.localScale = new Vector3(.9f, .9f);
+
 	}
 
 	public void OnDrop(PointerEventData eventData)
@@ -23,6 +26,26 @@ public class taskBn : MonoBehaviour, IDropHandler {
 
 		workers.Add(DragAndDropMans.dragObject.gameObject);
 		DragAndDropMans.dragObject.SetWork(this);
+	}
+
+
+	float scaleVelocity;
+	public float targetScale = 1f;
+	void Update()
+	{
+		if (transform.localScale.x > targetScale)
+			targetScale = transform.localScale.x;
+		if (transform.localScale.x == targetScale) return;
+
+		if (Mathf.Abs(transform.localScale.x - targetScale) < .01f)
+			transform.localScale = new Vector3(targetScale, targetScale, targetScale);
+		else
+		{
+			var t = Mathf.SmoothDamp(transform.localScale.x, targetScale, ref scaleVelocity, .3f);
+			transform.localScale = new Vector3(t, t, t);
+		}
+
+			
 	}
 
 	IEnumerator Start()

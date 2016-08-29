@@ -121,7 +121,7 @@ public class ResourcesSystem : AlphaController {
 				foreach (var e in techList.instance.emmiters)
 					e.Emit(10);
 
-				ChangeResource("Humans", -1 * (techList.researchedTeches.Count + Stock["Humans"].value * .3f),
+				ChangeResource("Humans", -1 * (techList.instance.researchedTeches.Count + Stock["Humans"].value * .3f),
 					Stock["Humans"].label.transform);
 
 				if (Stock["Humans"].value <= 0)

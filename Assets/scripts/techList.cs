@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class techList : MonoBehaviour {
 	static public techList instance;
-	static public Dictionary<string, Tech> teches = new Dictionary<string, Tech>()
+	 public Dictionary<string, Tech> teches = new Dictionary<string, Tech>()
 	{
 		/* Tier 1
 		 * Power = 1
@@ -120,7 +120,7 @@ public class techList : MonoBehaviour {
 		{ "Terraforming", new TierUnlock("Terraforming", 10000000, new List<string>() { "Union of nations" }) },
 		{ "Haven Project", new HavenTech()},
 	};
-	static public List<string> researchedTeches = new List<string>();
+	public List<string> researchedTeches = new List<string>();
 
 	public GameObject TechBn;
 	public GameObject TechPanel;
@@ -238,7 +238,7 @@ public class Tech {
 		var allOk = true;
 		foreach(var t in prereqTeches)
 		{
-			if (techList.researchedTeches.Contains(t)==false)
+			if (techList.instance.researchedTeches.Contains(t)==false)
 				allOk = false;
 		}
 

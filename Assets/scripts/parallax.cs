@@ -42,6 +42,8 @@ public class parallax : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		var xMouseDelta = oldXMousePosition - Input.mousePosition.x;
+		if (Mathf.Abs(xMouseDelta) > 200) return;
+
 		oldXMousePosition = Input.mousePosition.x;
 		if (xMouseDelta == 0) return;
 

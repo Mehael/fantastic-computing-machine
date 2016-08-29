@@ -59,13 +59,22 @@ public class Age : MonoBehaviour {
 
 	public void GoodEnd()
 	{
+
+		Clear();
 		SceneManager.LoadScene("goodEnd");
+
+	}
+
+	public void Clear()
+	{
 		SceneManager.UnloadScene("game");
+		age = "beforeLanguage";
 	}
 
 	public void BadEnd()
 	{
+		Clear();
 		SceneManager.LoadScene("badEnd");
-		SceneManager.UnloadScene("game");
+
 	}
 }

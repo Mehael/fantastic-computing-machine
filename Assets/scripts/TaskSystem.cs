@@ -26,7 +26,10 @@ public class TaskSystem : MonoBehaviour {
 		var go = (GameObject)Instantiate(TaskPrefab);
 		go.transform.SetParent(TaskPanel.transform);
 		go.name = resType;
-		go.GetComponent<taskBn>().resName = resType;
+
+		var bn = go.GetComponent<taskBn>();
+		bn.resName = resType;
+		
 		go.GetComponentInChildren<Text>().text = bnText;
 		tasks.Add(bnText, go);
 

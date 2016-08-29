@@ -6,6 +6,6 @@ public class startGame : MonoBehaviour {
 
 	public void StartGameClick(string param)
 	{
-		SceneManager.LoadScene("game");
+		Application.LoadLevel("game"); 
 	}
 }
