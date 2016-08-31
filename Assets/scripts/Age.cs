@@ -45,7 +45,7 @@ public class Age : MonoBehaviour {
 		}
 		else
 		{
-			while (module > 1000)
+			while (module > 999)
 			{
 				res = res + "k";
 				module = Mathf.FloorToInt(module / 1000);

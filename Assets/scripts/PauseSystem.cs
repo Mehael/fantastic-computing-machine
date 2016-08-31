@@ -26,14 +26,20 @@ public class PauseSystem : MonoBehaviour {
 	void Update()
 	{
 		if (timer > 0) timer -= Time.deltaTime;
-		if (inPause == false) return;
 
 		if (Input.GetKeyDown(KeyCode.Space))
-		{
-			inPause = false;
-			timer = Cooldown;
-			pausePanel.gameObject.SetActive(false);
-		}
+			if (inPause == true)
+			{
+				inPause = false;
+				if (textbox.text != "Pause") timer = Cooldown;
+				pausePanel.gameObject.SetActive(false);
+			}
+			else
+			{
+				inPause = true;
+				textbox.text = "Pause";
+				pausePanel.gameObject.SetActive(true);
+			}
 		
 	}
 }

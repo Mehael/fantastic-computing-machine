@@ -135,7 +135,7 @@ public class techList : MonoBehaviour {
 
 		while (true)
 		{
-			yield return new WaitForSeconds(1f);
+			yield return new WaitForEndOfFrame();
 			CheckCosts();
 		}
 	}
@@ -159,9 +159,10 @@ public class techList : MonoBehaviour {
 		researchedTeches.Add(techName);
 		CheckUnlock();
 
-		Destroy(teches[techName].bn.gameObject);
-		ResourcesSystem.instance.Stock["Science"].value -= teches[techName].scienceCost;
+		ResourcesSystem.instance.Stock["Science"].value -= teches[techName].cost;
 		teches[techName].Buy();
+
+		Destroy(teches[techName].bn.gameObject);
 		CheckParticles(techName);
 		teches.Remove(techName);
 	}
@@ -194,6 +195,12 @@ public class techList : MonoBehaviour {
 						e.GetComponent<ParticleSystemRenderer>().material = p;
 	}
 
+	string ColorToHex(Color color)
+	{
+		Color32 color32 = color;
+		return "#"+color32.r.ToString("X2") + color32.g.ToString("X2") + color32.b.ToString("X2")+ "FF";
+	}
+
 	public void UnlockTech(string TechName)
 	{
 		var newTech = teches[TechName];
@@ -201,36 +208,64 @@ public class techList : MonoBehaviour {
 		newTech.bn = Instantiate(TechBn).GetComponent<Button>();
 		newTech.bn.transform.SetParent(TechPanel.transform);
 
-		var text = newTech.name;
-		if (Age.age == "beforeLanguage" && newTech.maskName != null)
-		{
-			text = newTech.maskName;
-			Age.instance.abrvgl.Add(newTech.bn.GetComponentInChildren<Text>(), newTech.name 
-				+ " : " + newTech.scienceCost);
-		}
-
-		var cost = " : " + Age.WrapInt(newTech.scienceCost);
-		if (newTech.scienceCost == 0)
-			cost = " : humans";
-
-		newTech.bn.GetComponentInChildren<Text>().text = text + cost; 
-		newTech.bn.name = newTech.name;
+		UpdateLabel(TechName);
 		CheckCosts();
 	}
+
+	public void UpdateLabels()
+	{
+		foreach(var t in teches)
+			UpdateLabel(t.Key);
+	}
+
+	void UpdateLabel(string TechName)
+	{
+		var newTech = teches[TechName];
+		if (newTech.bn == null) return;
+
+		var lbl = newTech.bn.GetComponentInChildren<Text>();
+		
+		var cost = " : " + Age.WrapInt(newTech.cost);
+		string CostColor;
+		if (newTech.isScienceCost == false)
+			CostColor = ColorToHex(ResourcesSystem.colorCodes["Humans"]);
+		else
+			CostColor = ColorToHex(ResourcesSystem.colorCodes["Science"]);
+
+		var TechColor = "#000000ff";
+		if (newTech.type != null)
+			TechColor = ColorToHex(ResourcesSystem.colorCodes[newTech.type]);
+
+		var text = newTech.name;
+		if (Age.age == "beforeLanguage" && TechName != "Language")
+		{
+			if (newTech.maskName != null) text = newTech.maskName;
+			else text = "BlahBlah";
+			Age.instance.abrvgl.Add(newTech.bn.GetComponentInChildren<Text>(),
+				"<color=" + TechColor + ">" + newTech.name + "</color>" +
+				"<color=" + CostColor + ">" + cost + "</color>");
+		}
+
+		lbl.text = "<color=" + TechColor + ">" + text + "</color>" +
+			"<color=" + CostColor + ">" + cost + "</color>";
+		newTech.bn.name = newTech.name;
+	}
+
 }
 
-
 public class Tech {
-	public int scienceCost;
+	public int cost;
 	public List<string> prereqTeches = new List<string>();
 	public string name;
 	public string maskName;
 	public Button bn;
+	public string type;
+	public bool isScienceCost = true;
 
 	public virtual bool avaliableBuyCheck()
 	{
 		if (ResourcesSystem.instance.Stock.ContainsKey("Science") == false) return false;
-		return ResourcesSystem.instance.Stock["Science"].value >= scienceCost;
+		return ResourcesSystem.instance.Stock["Science"].value >= cost;
 	}
 
 	public bool unlockCheck()
@@ -255,7 +290,7 @@ public class AgeTech: Tech
 	public AgeTech(string name, int cost, string newAge, List<string> prereqTeches)
 	{
 		this.name = name;
-		scienceCost = cost;
+		base.cost = cost;
 		age = newAge;
 		this.prereqTeches = prereqTeches;
 	}
@@ -263,23 +298,23 @@ public class AgeTech: Tech
 	public override void Buy()
 	{
 		Age.instance.changeAge(age);
+		techList.instance.UpdateLabels();
 	}
 }
 
 public class TierUnlock : Tech
 {
-	int humanNeeded;
-
 	public TierUnlock(string name, int cost, List<string> prereqTeches)
 	{
 		this.name = name;
-		humanNeeded = cost;
+		isScienceCost = false;
+		this.cost = cost;
 		this.prereqTeches = prereqTeches;
+		type = "Humans";
 	}
 	public override bool avaliableBuyCheck()
 	{
-		return base.avaliableBuyCheck() && 
-			ResourcesSystem.instance.Stock["Humans"].value >= humanNeeded;
+		return 	ResourcesSystem.instance.Stock["Humans"].value >= cost;
 	}
 
 	public override void Buy()
@@ -294,7 +329,8 @@ public class FrendTech : Tech
 	{
 		prereqTeches.Add("Leaders");
 		name = "Cats";
-		scienceCost = 333;
+		cost = 333;
+		type = "Cats";
 	}
 
 	public override void Buy()
@@ -309,7 +345,7 @@ public class HavenTech : Tech
 	{
 		prereqTeches.Add("Terraforming");
 		name = "Haven Project";
-		scienceCost = 10000000;
+		cost = 10000000;
 	}
 
 	public override void Buy()
@@ -328,10 +364,11 @@ public class JustTech : Tech
 	{
 		this.prereqTeches = prereqTeches;
 		this.name = name;
-		this.scienceCost = scienceCost;
+		this.cost = scienceCost;
 		this.maskName = maskName;
 		this.techName = techName;
 		this.addClickPower = addClickPower;
+		type = techName;
 	}
 
 	public override void Buy()
@@ -349,7 +386,7 @@ public class WorkerTech : Tech
 	{
 		this.prereqTeches = prereqTeches;
 		this.name = name;
-		this.scienceCost = scienceCost;
+		this.cost = scienceCost;
 		this.maskName = maskName;
 		this.newTimerValue = newTimerValue;
 	}
@@ -369,7 +406,7 @@ public class GlobalTech : Tech
 	{
 		this.prereqTeches = prereqTeches;
 		this.name = name;
-		this.scienceCost = scienceCost;
+		this.cost = scienceCost;
 		this.maskName = maskName;
 		this.newMult = newMult;
 	}
@@ -387,7 +424,8 @@ public class SexTech : Tech
 	{
 		prereqTeches.Add("Language");
 		name = "Sex";
-		scienceCost = 10;
+		cost = 10;
+		type = "Humans";
 	}
 
 
@@ -406,7 +444,7 @@ public class ProfTech : Tech
 	{
 		prereqTeches.Add("Family");
 		name = "Professions";
-		scienceCost = 1;
+		cost = 1;
 	}
 
 
@@ -428,11 +466,12 @@ public class newTaskTech : Tech
 	{
 		this.prereqTeches = prereqTeches;
 		this.name = name;
-		this.scienceCost = scienceCost;
+		this.cost = scienceCost;
 		this.tName = newTaskName;
 		this.tType = newTaskType;
 		this.startValue = startValue;
 		this.poplMult = poplMult;
+		type = newTaskType;
 	}
 
 	public override void Buy()

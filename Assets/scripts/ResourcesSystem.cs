@@ -79,6 +79,16 @@ public class ResourcesSystem : AlphaController {
 		
 	}
 
+	public static Dictionary<string, Color> colorCodes = new Dictionary<string, Color>()
+	{
+		{"Food", new Color(.57f,.85f,.57f) },
+		{"Humans", new Color(.57f, .81f, .85f) },
+		{"Science", new Color(.49f, .58f, .94f) },
+		{"Cats" , new Color(.85f, .57f, .75f)},
+		{"Combustible", new Color(.85f,.79f,.57f) },
+		{"Indie" , new Color(.65f, .57f, .85f)}
+	};
+
 	public void AddNewResource(string name, float startIncome = 0, float startValue = 0)
 	{
 		if (Stock.ContainsKey(name)) return;
@@ -86,6 +96,7 @@ public class ResourcesSystem : AlphaController {
 		var go = Instantiate<GameObject>(resourceLabelPrefab);
 		go.transform.SetParent(stockPanel.transform);
 		Stock.Add(name, new Resource(go, startIncome, startValue));
+		Stock[name].labelText.color = colorCodes[name];
 	}
 
 

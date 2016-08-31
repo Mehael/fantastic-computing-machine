@@ -8,13 +8,15 @@ public class bonus : AlphaController {
 
 	public void Cathced(string param) {
 		if (isActive == false || PauseSystem.inPause) return;
+		GetComponent<CanvasGroup>().blocksRaycasts = false;
 		isActive = false;
 
 		var stock = ResourcesSystem.instance.Stock;
 		var luck = stock.Where( t => t.Key != "Humans")
 			.ElementAt(UnityEngine.Random.Range(0, stock.Count - 1));
-		ResourcesSystem.instance.ChangeResource(luck.Key, luck.Value.withMultCost * 100, transform);
+		ResourcesSystem.instance.ChangeResource(luck.Key, luck.Value.withMultCost * 500, transform);
 		StartCoroutine(Destroing());
+
 
 	}
 
